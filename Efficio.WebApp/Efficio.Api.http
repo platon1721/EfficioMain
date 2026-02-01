@@ -1,0 +1,6 @@
+@Efficio.Api_HostAddress = http://localhost:5007
+
+GET {{Efficio.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
