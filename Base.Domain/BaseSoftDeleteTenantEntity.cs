@@ -2,12 +2,7 @@ using Base.Contracts;
 
 namespace Base.Domain;
 
-public abstract class BaseSoftDeleteEntity : BaseSoftDeleteEntity<Guid>
-{
-    
-}
-
-public abstract class BaseSoftDeleteEntity<TKey> : BaseAuditableEntity<TKey>, IDomainSoftDelete
+public abstract class BaseSoftDeleteTenantEntity<TKey> : BaseAuditableTenantEntity<TKey>, IDomainSoftDelete
     where TKey : IEquatable<TKey>
 {
     public bool IsDeleted { get; private set; }
@@ -26,5 +21,9 @@ public abstract class BaseSoftDeleteEntity<TKey> : BaseAuditableEntity<TKey>, ID
     {
         DeletedByName = name;
     }
+}
 
+public abstract class BaseSoftDeleteTenantEntity : BaseSoftDeleteTenantEntity<Guid>
+{
+    
 }

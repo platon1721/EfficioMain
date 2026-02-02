@@ -1,5 +1,8 @@
 namespace Base.Contracts;
 
+/// <summary>
+/// Interface for holding metadata about creation and updates of data
+/// </summary>
 public interface IDomainMeta
 {
     public Guid CreatedById { get; }

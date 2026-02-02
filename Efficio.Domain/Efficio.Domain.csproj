@@ -8,9 +8,18 @@
 
     <ItemGroup>
       <Folder Include="Departments\" />
-      <Folder Include="Identity\" />
       <Folder Include="Security\" />
       <Folder Include="Tenants\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Base.Domain\Base.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Identity.Stores">
+        <HintPath>..\..\..\..\.dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.14\ref\net8.0\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,9 @@
 namespace Base.Contracts;
 
+
+/// <summary>
+/// Generic id for entities. By default is Guid
+/// </summary>
 public interface IDomainId : IDomainId<Guid>
 {
     
