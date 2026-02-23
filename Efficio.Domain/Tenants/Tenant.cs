@@ -17,6 +17,8 @@ public class Tenant : BaseSoftDeleteEntity
     public string DefaultLocale { get; private set; } = "et-EE";
     
     public Guid RootDepartmentId { get; private set; }
+
+    public TenantStatus Status { get; set; } = TenantStatus.Active;
     
     
     public Tenant(string name, string code, string defaultTimeZone = "Europe/Tallinn", string defaultLocale = "et-EE")

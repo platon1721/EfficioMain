@@ -3,7 +3,7 @@ using Base.Domain;
 
 namespace Efficio.Domain.Departments;
 
-public class DepartmentType : BaseSoftDeleteDepartmentEntity
+public class DepartmentType : BaseSoftDeleteTenantEntity
 {
     [Required]
     [MaxLength(128)]
