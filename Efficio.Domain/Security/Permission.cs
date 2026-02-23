@@ -11,5 +11,7 @@ public class Permission : BaseSoftDeleteEntity
     public string Key { get; set; } = default!;
     public string? Name { get; set; }
     public bool IsActive { get; set; } = true;
+    
+    public Module? Module { get; set; }
 
 }

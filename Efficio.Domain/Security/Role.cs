@@ -5,7 +5,7 @@ namespace Efficio.Domain.Security;
 
 public class Role: BaseSoftDeleteDepartmentEntity
 {
-
+    [Required]
     [MaxLength(128)]
     public string Name { get; set; } = default!;
     [MaxLength(500)]
