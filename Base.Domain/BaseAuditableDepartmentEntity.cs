@@ -2,6 +2,11 @@ using Base.Contracts;
 
 namespace Base.Domain;
 
+public abstract class BaseAuditableDepartmentEntity : BaseAuditableDepartmentEntity<Guid>
+{
+    
+}
+
 public abstract class BaseAuditableDepartmentEntity<TKey> : BaseDepartmentScopedEntity<TKey>, IDomainMeta
     where TKey : IEquatable<TKey>
 {
@@ -15,10 +20,10 @@ public abstract class BaseAuditableDepartmentEntity<TKey> : BaseDepartmentScoped
     
     public string? SysNotes { get; protected set; }
     
-    public void Create(Guid userId)
+    public void Create(Guid userId, IClock clock)
     {
         CreatedById = userId;
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = clock.UtcNow;
     }
 
     public void CreateWithName(string name)
@@ -26,10 +31,10 @@ public abstract class BaseAuditableDepartmentEntity<TKey> : BaseDepartmentScoped
         CreatedByName = name;
     }
     
-    public void Update(Guid userId)
+    public void Update(Guid userId, IClock clock)
     {
         UpdatedById = userId;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = clock.UtcNow;
     }
 
     public void UpdateWithName(string name)

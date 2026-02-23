@@ -21,10 +21,10 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IDomainMeta
     
     public string? SysNotes { get; protected set; }
     
-    public void Create(Guid userId)
+    public void Create(Guid userId, IClock clock)
     {
         CreatedById = userId;
-        CreatedAt = DateTime.UtcNow;
+        CreatedAt = clock.UtcNow;
     }
 
     public void CreateWithName(string name)
@@ -32,10 +32,10 @@ public abstract class BaseAuditableEntity<TKey> : BaseEntity<TKey>, IDomainMeta
         CreatedByName = name;
     }
     
-    public void Update(Guid userId)
+    public void Update(Guid userId, IClock clock)
     {
         UpdatedById = userId;
-        UpdatedAt = DateTime.UtcNow;
+        UpdatedAt = clock.UtcNow;
     }
 
     public void UpdateWithName(string name)

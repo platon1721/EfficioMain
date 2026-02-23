@@ -10,11 +10,11 @@ public abstract class BaseSoftDeleteTenantEntity<TKey> : BaseAuditableTenantEnti
     public string? DeletedByName { get; private set; }
     public DateTime? DeletedAt { get; private set; }
 
-    public void Delete(Guid userId)
+    public void Delete(Guid userId, IClock clock)
     {
         IsDeleted = true;
         DeletedById = userId;
-        DeletedAt = DateTime.UtcNow;
+        DeletedAt = clock.UtcNow;
     }
     
     public void DeleteWithName(string name)
