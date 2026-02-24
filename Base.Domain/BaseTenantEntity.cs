@@ -1,6 +1,8 @@
+using Base.Contracts;
+
 namespace Base.Domain;
 
-public abstract class BaseTenantEntity<TKey> : BaseEntity<TKey>
+public abstract class BaseTenantEntity<TKey> : BaseEntity<TKey>, ITenantScoped
     where TKey : IEquatable<TKey>
 {
     public Guid TenantRootDepartmentId { get; private set; }
