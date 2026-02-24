@@ -14,5 +14,6 @@ public interface IDomainId<TKey>
 {
     public TKey Id {
         get;
+        set;
     }
 }

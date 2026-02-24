@@ -11,11 +11,11 @@ public abstract class BaseRefreshToken<TKey, TUser> : BaseEntity<TKey>
     public string Token { get; set; } = Guid.NewGuid().ToString();
     public DateTime ExpiresAt { get; set; } = DateTime.UtcNow.AddDays(7);
     
-    // Token rotation tugi
+    // Token rotation
     public string? PreviousToken { get; set; }
     public DateTime? PreviousExpiresAt { get; set; }
     
-    // Revocation tugi
+    // Revocation
     public bool IsRevoked { get; private set; }
     public DateTime? RevokedAt { get; private set; }
     
