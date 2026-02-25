@@ -1,8 +1,8 @@
 namespace Base.Contracts;
 
 public interface IMapper<TUpperEntity, TLowerEntity> : IMapper<TUpperEntity, TLowerEntity, Guid>
-    where TUpperEntity : class, IDomainId
-    where TLowerEntity : class, IDomainId
+    where TUpperEntity : class, IDomainId<Guid>
+    where TLowerEntity : class, IDomainId<Guid>
 {
 }
 
