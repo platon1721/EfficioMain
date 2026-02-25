@@ -7,7 +7,7 @@ namespace Base.Domain;
 /// Use for tenant-level business data that needs audit trail.
 /// </summary>
 
-public abstract class BaseAuditableTenantEntity : BaseAuditableEntity<Guid>
+public abstract class BaseAuditableTenantEntity : BaseAuditableTenantEntity<Guid>
 {
     
 }

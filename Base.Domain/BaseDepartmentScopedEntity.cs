@@ -5,7 +5,7 @@ namespace Base.Domain;
 public abstract class BaseDepartmentScopedEntity<TKey> : BaseTenantEntity<TKey>, IDepartmentScoped
     where TKey : IEquatable<TKey>
 {
-    public Guid DepartmentId { get; private set; }
+    public Guid DepartmentId { get; set; }
     
     public void SetDepartmentId(Guid departmentId) => DepartmentId = departmentId;
 }

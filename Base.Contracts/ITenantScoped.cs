@@ -6,5 +6,5 @@ namespace Base.Contracts;
 /// </summary>
 public interface ITenantScoped
 { 
-    Guid TenantRootDepartmentId { get; }
+    Guid TenantRootDepartmentId { get; set; }
 }
