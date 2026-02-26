@@ -11,6 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Base.DAL.EF\Base.DAL.EF.csproj" />
+      <ProjectReference Include="..\Efficio.DAL.Contracts\Efficio.DAL.Contracts.csproj" />
       <ProjectReference Include="..\Efficio.DAL.DTO\Efficio.DAL.DTO.csproj" />
       <ProjectReference Include="..\Efficio.Domain\Efficio.Domain.csproj" />
     </ItemGroup>

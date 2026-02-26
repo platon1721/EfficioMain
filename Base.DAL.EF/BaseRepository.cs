@@ -10,8 +10,8 @@ namespace Base.DAL.EF;
 /// </summary>
 public class BaseRepository<TDalEntity, TDomainEntity> : BaseRepository<TDalEntity, TDomainEntity, Guid>,
     IBaseRepository<TDalEntity>
-    where TDalEntity : class, IDomainId
-    where TDomainEntity : class, IDomainId
+    where TDalEntity : class, IDomainId<Guid>
+    where TDomainEntity : class, IDomainId<Guid>
 {
     public BaseRepository(DbContext repositoryDbContext, IMapper<TDalEntity, TDomainEntity> mapper,
         IUserContext? userContext = null)

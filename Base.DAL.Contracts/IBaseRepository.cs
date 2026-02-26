@@ -3,7 +3,7 @@ using Base.Contracts;
 namespace Base.DAL.Contracts;
 
 public interface IBaseRepository<TEntity> : IBaseRepository<TEntity, Guid>
-    where TEntity : IDomainId
+    where TEntity : IDomainId<Guid>
 {
     
 }
