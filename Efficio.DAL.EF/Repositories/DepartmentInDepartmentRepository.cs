@@ -36,8 +36,8 @@ public class DepartmentInDepartmentRepository : BaseRepository<DalDto.Department
     public async Task<bool> LinkExistsAsync(Guid parentDepartmentId, Guid childDepartmentId)
     {
         return await RepositoryDbSet
-            .AnyAsync(l => l.ParentDepartmentId == parentDepartmentId && 
-                          l.ChildDepartmentId == childDepartmentId);
+            .AnyAsync(l => l.ParentDepartmentId == parentDepartmentId &&
+                           l.ChildDepartmentId == childDepartmentId);
     }
 
     public async Task<DalDto.DepartmentInDepartment?> FindLinkAsync(Guid parentDepartmentId, Guid childDepartmentId)
@@ -45,8 +45,8 @@ public class DepartmentInDepartmentRepository : BaseRepository<DalDto.Department
         var entity = await RepositoryDbSet
             .Include(l => l.ParentDepartment)
             .Include(l => l.ChildDepartment)
-            .FirstOrDefaultAsync(l => l.ParentDepartmentId == parentDepartmentId && 
-                                     l.ChildDepartmentId == childDepartmentId);
+            .FirstOrDefaultAsync(l => l.ParentDepartmentId == parentDepartmentId &&
+                                      l.ChildDepartmentId == childDepartmentId);
         return Mapper.Map(entity);
     }
 
@@ -58,30 +58,5 @@ public class DepartmentInDepartmentRepository : BaseRepository<DalDto.Department
             .Where(l => l.TenantRootDepartmentId == tenantRootDepartmentId)
             .ToListAsync();
         return entities.Select(e => Mapper.Map(e)!);
-    }
-
-    public Task<IEnumerable<DalDto.DepartmentInDepartment>> GetByParentIdAsync(Guid parentDepartmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.DepartmentInDepartment>> GetByChildIdAsync(Guid childDepartmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DalDto.DepartmentInDepartment?> FindByParentAndChildAsync(Guid parentDepartmentId, Guid childDepartmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> RelationExistsAsync(Guid parentDepartmentId, Guid childDepartmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.DepartmentInDepartment>> GetWithDepartmentsAsync()
-    {
-        throw new NotImplementedException();
     }
 }

@@ -9,10 +9,9 @@ public interface IRolePermissionRepository : IBaseRepository<RolePermission>, IR
 
 public interface IRolePermissionRepositoryCustom
 {
-    Task<IEnumerable<RolePermission>> GetByRoleIdAsync(Guid roleId);
-    Task<IEnumerable<RolePermission>> GetByPermissionIdAsync(Guid permissionId);
+    Task<IEnumerable<RolePermission>> GetByRoleAsync(Guid roleId);
+    Task<IEnumerable<RolePermission>> GetByPermissionAsync(Guid permissionId);
+    Task<bool> HasPermissionAsync(Guid roleId, Guid permissionId);
     Task<RolePermission?> FindByRoleAndPermissionAsync(Guid roleId, Guid permissionId);
-    Task<bool> RoleHasPermissionAsync(Guid roleId, Guid permissionId);
-    Task<IEnumerable<RolePermission>> GetWithRoleAndPermissionAsync();
     Task RemoveByRoleAndPermissionAsync(Guid roleId, Guid permissionId);
 }

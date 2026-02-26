@@ -24,22 +24,12 @@ public class TenantModuleRepository : BaseRepository<DalDto.TenantModule, Dom.Te
         return entities.Select(e => Mapper.Map(e)!);
     }
 
-    public Task<IEnumerable<DalDto.TenantModule>> GetWithModuleAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> TenantHasModuleAsync(Guid tenantRootDepartmentId, Guid moduleId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IEnumerable<DalDto.TenantModule>> GetActiveModulesForTenantAsync(Guid tenantRootDepartmentId)
     {
         var now = DateTime.UtcNow;
         var entities = await RepositoryDbSet
             .Include(tm => tm.Module)
-            .Where(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId && 
+            .Where(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId &&
                         (tm.ExpiresAt == null || tm.ExpiresAt > now))
             .ToListAsync();
         return entities.Select(e => Mapper.Map(e)!);
@@ -49,7 +39,7 @@ public class TenantModuleRepository : BaseRepository<DalDto.TenantModule, Dom.Te
     {
         var now = DateTime.UtcNow;
         return await RepositoryDbSet
-            .AnyAsync(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId && 
+            .AnyAsync(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId &&
                            tm.ModuleId == moduleId &&
                            (tm.ExpiresAt == null || tm.ExpiresAt > now));
     }
@@ -58,7 +48,7 @@ public class TenantModuleRepository : BaseRepository<DalDto.TenantModule, Dom.Te
     {
         var entity = await RepositoryDbSet
             .Include(tm => tm.Module)
-            .FirstOrDefaultAsync(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId && 
+            .FirstOrDefaultAsync(tm => tm.TenantRootDepartmentId == tenantRootDepartmentId &&
                                        tm.ModuleId == moduleId);
         return Mapper.Map(entity);
     }

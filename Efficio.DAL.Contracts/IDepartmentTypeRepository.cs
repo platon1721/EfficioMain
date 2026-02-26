@@ -10,5 +10,6 @@ public interface IDepartmentTypeRepository : IBaseRepository<DepartmentType>, ID
 public interface IDepartmentTypeRepositoryCustom
 {
     Task<DepartmentType?> FindByNameAsync(string name);
-    Task<bool> NameExistsAsync(string name);
+    Task<bool> NameExistsAsync(string name, Guid? excludeId = null);
+    Task<IEnumerable<DepartmentType>> GetByTenantAsync(Guid tenantRootDepartmentId);
 }

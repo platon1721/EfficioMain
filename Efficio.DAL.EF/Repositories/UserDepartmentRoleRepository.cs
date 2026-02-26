@@ -17,7 +17,7 @@ public class UserDepartmentRoleRepository : BaseRepository<DalDto.UserDepartment
 
     public async Task<IEnumerable<DalDto.UserDepartmentRole>> GetByUserAsync(Guid userId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(udr => udr.Role)
             .Include(udr => udr.Department)
             .Where(udr => udr.UserId == userId)
@@ -27,7 +27,7 @@ public class UserDepartmentRoleRepository : BaseRepository<DalDto.UserDepartment
 
     public async Task<IEnumerable<DalDto.UserDepartmentRole>> GetByDepartmentAsync(Guid departmentId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(udr => udr.Role)
             .Include(udr => udr.User)
             .Where(udr => udr.DepartmentId == departmentId)
@@ -35,48 +35,9 @@ public class UserDepartmentRoleRepository : BaseRepository<DalDto.UserDepartment
         return entities.Select(e => Mapper.Map(e)!);
     }
 
-    public Task<IEnumerable<DalDto.UserDepartmentRole>> GetByUserIdAsync(Guid userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.UserDepartmentRole>> GetByRoleIdAsync(Guid roleId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.UserDepartmentRole>> GetByDepartmentIdAsync(Guid departmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<DalDto.UserDepartmentRole?> FindByUserAndDepartmentAsync(Guid userId, Guid departmentId)
-    {
-        var entity = await RepositoryDbSet
-            .Include(udr => udr.Role)
-            .Include(udr => udr.Department)
-            .FirstOrDefaultAsync(udr => udr.UserId == userId && udr.DepartmentId == departmentId);
-        return Mapper.Map(entity);
-    }
-
-    public Task<bool> UserHasRoleInDepartmentAsync(Guid userId, Guid departmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.UserDepartmentRole>> GetWithRoleAndDepartmentAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<string>> GetUserPermissionKeysAsync(Guid userId, Guid departmentId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IEnumerable<DalDto.UserDepartmentRole>> GetByRoleAsync(Guid roleId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(udr => udr.User)
             .Include(udr => udr.Department)
             .Where(udr => udr.RoleId == roleId)
@@ -84,15 +45,24 @@ public class UserDepartmentRoleRepository : BaseRepository<DalDto.UserDepartment
         return entities.Select(e => Mapper.Map(e)!);
     }
 
+    public async Task<DalDto.UserDepartmentRole?> FindByUserAndDepartmentAsync(Guid userId, Guid departmentId)
+    {
+        var entity = await GetQuery()
+            .Include(udr => udr.Role)
+            .Include(udr => udr.Department)
+            .FirstOrDefaultAsync(udr => udr.UserId == userId && udr.DepartmentId == departmentId);
+        return Mapper.Map(entity);
+    }
+
     public async Task<bool> HasRoleInDepartmentAsync(Guid userId, Guid departmentId)
     {
-        return await RepositoryDbSet
+        return await GetQuery()
             .AnyAsync(udr => udr.UserId == userId && udr.DepartmentId == departmentId);
     }
 
     public async Task<IEnumerable<DalDto.UserDepartmentRole>> GetByUserInTenantAsync(Guid userId, Guid tenantRootDepartmentId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(udr => udr.Role)
             .Include(udr => udr.Department)
             .Where(udr => udr.UserId == userId && udr.TenantRootDepartmentId == tenantRootDepartmentId)

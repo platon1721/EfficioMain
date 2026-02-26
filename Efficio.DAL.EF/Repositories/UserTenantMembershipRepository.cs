@@ -17,7 +17,7 @@ public class UserTenantMembershipRepository : BaseRepository<DalDto.UserTenantMe
 
     public async Task<IEnumerable<DalDto.UserTenantMembership>> GetByUserIdAsync(Guid userId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Where(m => m.UserId == userId)
             .ToListAsync();
         return entities.Select(e => Mapper.Map(e)!);
@@ -34,20 +34,10 @@ public class UserTenantMembershipRepository : BaseRepository<DalDto.UserTenantMe
 
     public async Task<DalDto.UserTenantMembership?> FindByUserAndTenantAsync(Guid userId, Guid tenantRootDepartmentId)
     {
-        var entity = await RepositoryDbSet
-            .FirstOrDefaultAsync(m => m.UserId == userId && 
-                                     m.TenantRootDepartmentId == tenantRootDepartmentId);
+        var entity = await GetQuery()
+            .FirstOrDefaultAsync(m => m.UserId == userId &&
+                                      m.TenantRootDepartmentId == tenantRootDepartmentId);
         return Mapper.Map(entity);
-    }
-
-    public Task<IEnumerable<DalDto.UserTenantMembership>> GetByStatusAsync(DalDto.UserMembershipStatus status)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UserIsMemberOfTenantAsync(Guid userId, Guid tenantRootDepartmentId)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<IEnumerable<DalDto.UserTenantMembership>> GetActiveUsersByTenantAsync(Guid tenantRootDepartmentId)
@@ -55,16 +45,16 @@ public class UserTenantMembershipRepository : BaseRepository<DalDto.UserTenantMe
         var entities = await RepositoryDbSet
             .Include(m => m.User)
             .Where(m => m.TenantRootDepartmentId == tenantRootDepartmentId &&
-                       m.Status == Dom.UserMembershipStatus.Active)
+                        m.Status == Dom.UserMembershipStatus.Active)
             .ToListAsync();
         return entities.Select(e => Mapper.Map(e)!);
     }
 
     public async Task<bool> IsMemberAsync(Guid userId, Guid tenantRootDepartmentId)
     {
-        return await RepositoryDbSet
-            .AnyAsync(m => m.UserId == userId && 
-                          m.TenantRootDepartmentId == tenantRootDepartmentId &&
-                          m.Status == Dom.UserMembershipStatus.Active);
+        return await GetQuery()
+            .AnyAsync(m => m.UserId == userId &&
+                           m.TenantRootDepartmentId == tenantRootDepartmentId &&
+                           m.Status == Dom.UserMembershipStatus.Active);
     }
 }

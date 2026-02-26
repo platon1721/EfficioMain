@@ -17,7 +17,7 @@ public class RoleRepository : BaseRepository<DalDto.Role, Dom.Role>, IRoleReposi
 
     public async Task<IEnumerable<DalDto.Role>> GetByDepartmentAsync(Guid departmentId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(r => r.Department)
             .Where(r => r.DepartmentId == departmentId)
             .OrderBy(r => r.Name)
@@ -27,7 +27,7 @@ public class RoleRepository : BaseRepository<DalDto.Role, Dom.Role>, IRoleReposi
 
     public async Task<DalDto.Role?> FindByNameAsync(Guid departmentId, string name)
     {
-        var entity = await RepositoryDbSet
+        var entity = await GetQuery()
             .Include(r => r.Department)
             .FirstOrDefaultAsync(r => r.DepartmentId == departmentId && r.Name == name);
         return Mapper.Map(entity);
@@ -35,7 +35,7 @@ public class RoleRepository : BaseRepository<DalDto.Role, Dom.Role>, IRoleReposi
 
     public async Task<DalDto.Role?> FindWithPermissionsAsync(Guid roleId)
     {
-        var entity = await RepositoryDbSet
+        var entity = await GetQuery()
             .Include(r => r.Department)
             .Include(r => r.RolePermissions!)
             .ThenInclude(rp => rp.Permission)
@@ -45,34 +45,9 @@ public class RoleRepository : BaseRepository<DalDto.Role, Dom.Role>, IRoleReposi
 
     public async Task<bool> NameExistsAsync(Guid departmentId, string name, Guid? excludeId = null)
     {
-        return await RepositoryDbSet
-            .AnyAsync(r => r.DepartmentId == departmentId && 
+        return await GetQuery()
+            .AnyAsync(r => r.DepartmentId == departmentId &&
                            r.Name == name &&
                            (!excludeId.HasValue || r.Id != excludeId.Value));
-    }
-
-    public Task<DalDto.Role?> FindByNameAsync(string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DalDto.Role?> GetWithPermissionsAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.Role>> GetWithPermissionsAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.Role>> GetByDepartmentIdAsync(Guid departmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> NameExistsInDepartmentAsync(string name, Guid departmentId)
-    {
-        throw new NotImplementedException();
     }
 }

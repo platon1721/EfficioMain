@@ -9,10 +9,9 @@ public interface IDepartmentRepository : IBaseRepository<Department>, IDepartmen
 
 public interface IDepartmentRepositoryCustom
 {
-    Task<Department?> GetWithDepartmentTypeAsync(Guid id);
-    Task<Department?> GetWithChildrenAsync(Guid id);
-    Task<Department?> GetWithParentsAsync(Guid id);
-    Task<Department?> GetWithAllRelationsAsync(Guid id);
-    Task<IEnumerable<Department>> GetByDepartmentTypeAsync(Guid departmentTypeId);
-    Task<IEnumerable<Department>> GetRootDepartmentsAsync();
+    Task<Department?> FindWithTypeAsync(Guid id);
+    Task<Department?> FindWithHierarchyAsync(Guid id);
+    Task<IEnumerable<Department>> GetByTenantAsync(Guid tenantRootDepartmentId);
+    Task<IEnumerable<Department>> GetByTypeAsync(Guid departmentTypeId);
+    Task<IEnumerable<Department>> GetRootDepartmentsAsync(Guid tenantRootDepartmentId);
 }

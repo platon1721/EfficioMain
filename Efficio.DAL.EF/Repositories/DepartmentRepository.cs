@@ -17,7 +17,7 @@ public class DepartmentRepository : BaseRepository<DalDto.Department, Dom.Depart
 
     public async Task<DalDto.Department?> FindWithTypeAsync(Guid id)
     {
-        var entity = await RepositoryDbSet
+        var entity = await GetQuery()
             .Include(d => d.DepartmentType)
             .FirstOrDefaultAsync(d => d.Id == id);
         return Mapper.Map(entity);
@@ -35,7 +35,7 @@ public class DepartmentRepository : BaseRepository<DalDto.Department, Dom.Depart
 
     public async Task<IEnumerable<DalDto.Department>> GetByTypeAsync(Guid departmentTypeId)
     {
-        var entities = await RepositoryDbSet
+        var entities = await GetQuery()
             .Include(d => d.DepartmentType)
             .Where(d => d.DepartmentTypeId == departmentTypeId)
             .OrderBy(d => d.Name)
@@ -45,7 +45,7 @@ public class DepartmentRepository : BaseRepository<DalDto.Department, Dom.Depart
 
     public async Task<DalDto.Department?> FindWithHierarchyAsync(Guid id)
     {
-        var entity = await RepositoryDbSet
+        var entity = await GetQuery()
             .Include(d => d.DepartmentType)
             .Include(d => d.ParentDepartmentLinks!)
                 .ThenInclude(l => l.ParentDepartment)
@@ -64,39 +64,9 @@ public class DepartmentRepository : BaseRepository<DalDto.Department, Dom.Depart
         var entities = await RepositoryDbSet
             .Include(d => d.DepartmentType)
             .Where(d => d.TenantRootDepartmentId == tenantRootDepartmentId &&
-                       !departmentsWithParents.Contains(d.Id))
+                        !departmentsWithParents.Contains(d.Id))
             .OrderBy(d => d.Name)
             .ToListAsync();
         return entities.Select(e => Mapper.Map(e)!);
-    }
-
-    public Task<DalDto.Department?> GetWithDepartmentTypeAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DalDto.Department?> GetWithChildrenAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DalDto.Department?> GetWithParentsAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DalDto.Department?> GetWithAllRelationsAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.Department>> GetByDepartmentTypeAsync(Guid departmentTypeId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<DalDto.Department>> GetRootDepartmentsAsync()
-    {
-        throw new NotImplementedException();
     }
 }

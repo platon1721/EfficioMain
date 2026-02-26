@@ -10,8 +10,7 @@ public interface ITenantModuleRepository : IBaseRepository<TenantModule>, ITenan
 public interface ITenantModuleRepositoryCustom
 {
     Task<IEnumerable<TenantModule>> GetByTenantAsync(Guid tenantRootDepartmentId);
-    Task<IEnumerable<TenantModule>> GetWithModuleAsync();
     Task<TenantModule?> FindByTenantAndModuleAsync(Guid tenantRootDepartmentId, Guid moduleId);
-    Task<bool> TenantHasModuleAsync(Guid tenantRootDepartmentId, Guid moduleId);
+    Task<bool> HasModuleAsync(Guid tenantRootDepartmentId, Guid moduleId);
     Task<IEnumerable<TenantModule>> GetActiveModulesForTenantAsync(Guid tenantRootDepartmentId);
 }

@@ -9,11 +9,10 @@ public interface IUserDepartmentRoleRepository : IBaseRepository<UserDepartmentR
 
 public interface IUserDepartmentRoleRepositoryCustom
 {
-    Task<IEnumerable<UserDepartmentRole>> GetByUserIdAsync(Guid userId);
-    Task<IEnumerable<UserDepartmentRole>> GetByRoleIdAsync(Guid roleId);
-    Task<IEnumerable<UserDepartmentRole>> GetByDepartmentIdAsync(Guid departmentId);
+    Task<IEnumerable<UserDepartmentRole>> GetByUserAsync(Guid userId);
+    Task<IEnumerable<UserDepartmentRole>> GetByDepartmentAsync(Guid departmentId);
+    Task<IEnumerable<UserDepartmentRole>> GetByRoleAsync(Guid roleId);
     Task<UserDepartmentRole?> FindByUserAndDepartmentAsync(Guid userId, Guid departmentId);
-    Task<bool> UserHasRoleInDepartmentAsync(Guid userId, Guid departmentId);
-    Task<IEnumerable<UserDepartmentRole>> GetWithRoleAndDepartmentAsync();
-    Task<IEnumerable<string>> GetUserPermissionKeysAsync(Guid userId, Guid departmentId);
+    Task<bool> HasRoleInDepartmentAsync(Guid userId, Guid departmentId);
+    Task<IEnumerable<UserDepartmentRole>> GetByUserInTenantAsync(Guid userId, Guid tenantRootDepartmentId);
 }

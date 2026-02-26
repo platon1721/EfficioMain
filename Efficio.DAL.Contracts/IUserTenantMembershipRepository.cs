@@ -8,10 +8,10 @@ public interface IUserTenantMembershipRepository : IBaseRepository<UserTenantMem
 }
 
 public interface IUserTenantMembershipRepositoryCustom
-{
+{ 
     Task<IEnumerable<UserTenantMembership>> GetByUserIdAsync(Guid userId);
     Task<IEnumerable<UserTenantMembership>> GetByTenantAsync(Guid tenantRootDepartmentId);
     Task<UserTenantMembership?> FindByUserAndTenantAsync(Guid userId, Guid tenantRootDepartmentId);
-    Task<IEnumerable<UserTenantMembership>> GetByStatusAsync(UserMembershipStatus status);
-    Task<bool> UserIsMemberOfTenantAsync(Guid userId, Guid tenantRootDepartmentId);
+    Task<IEnumerable<UserTenantMembership>> GetActiveUsersByTenantAsync(Guid tenantRootDepartmentId);
+    Task<bool> IsMemberAsync(Guid userId, Guid tenantRootDepartmentId);
 }

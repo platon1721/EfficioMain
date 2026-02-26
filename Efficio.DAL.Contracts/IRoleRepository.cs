@@ -8,10 +8,9 @@ public interface IRoleRepository : IBaseRepository<Role>, IRoleRepositoryCustom
 }
 
 public interface IRoleRepositoryCustom
-{
-    Task<Role?> FindByNameAsync(string name);
-    Task<Role?> GetWithPermissionsAsync(Guid id);
-    Task<IEnumerable<Role>> GetWithPermissionsAsync();
-    Task<IEnumerable<Role>> GetByDepartmentIdAsync(Guid departmentId);
-    Task<bool> NameExistsInDepartmentAsync(string name, Guid departmentId);
+{ 
+    Task<IEnumerable<Role>> GetByDepartmentAsync(Guid departmentId);
+    Task<Role?> FindByNameAsync(Guid departmentId, string name);
+    Task<Role?> FindWithPermissionsAsync(Guid roleId);
+    Task<bool> NameExistsAsync(Guid departmentId, string name, Guid? excludeId = null);
 }

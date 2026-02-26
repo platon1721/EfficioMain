@@ -8,7 +8,6 @@ using Dom = Efficio.Domain.Departments;
 
 namespace Efficio.DAL.EF.Repositories;
 
-
 public class DepartmentTypeRepository : BaseRepository<DalDto.DepartmentType, Dom.DepartmentType>, IDepartmentTypeRepository
 {
     public DepartmentTypeRepository(EfficioDbContext dbContext, IUserContext? userContext = null)
@@ -16,11 +15,10 @@ public class DepartmentTypeRepository : BaseRepository<DalDto.DepartmentType, Do
     {
     }
 
-    public async Task<DalDto.DepartmentType?> FindByNameAsync(Guid tenantRootDepartmentId, string name)
+    public async Task<DalDto.DepartmentType?> FindByNameAsync(string name)
     {
-        var entity = await RepositoryDbSet
-            .FirstOrDefaultAsync(dt => dt.TenantRootDepartmentId == tenantRootDepartmentId && 
-                                       dt.Name == name);
+        var entity = await GetQuery()
+            .FirstOrDefaultAsync(dt => dt.Name == name);
         return Mapper.Map(entity);
     }
 
@@ -33,21 +31,10 @@ public class DepartmentTypeRepository : BaseRepository<DalDto.DepartmentType, Do
         return entities.Select(e => Mapper.Map(e)!);
     }
 
-    public async Task<bool> NameExistsAsync(Guid tenantRootDepartmentId, string name, Guid? excludeId = null)
+    public async Task<bool> NameExistsAsync(string name, Guid? excludeId = null)
     {
-        return await RepositoryDbSet
-            .AnyAsync(dt => dt.TenantRootDepartmentId == tenantRootDepartmentId && 
-                            dt.Name == name &&
+        return await GetQuery()
+            .AnyAsync(dt => dt.Name == name &&
                             (!excludeId.HasValue || dt.Id != excludeId.Value));
-    }
-
-    public Task<DalDto.DepartmentType?> FindByNameAsync(string name)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> NameExistsAsync(string name)
-    {
-        throw new NotImplementedException();
     }
 }

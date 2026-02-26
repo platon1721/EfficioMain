@@ -9,9 +9,9 @@ public interface IDepartmentInDepartmentRepository : IBaseRepository<DepartmentI
 
 public interface IDepartmentInDepartmentRepositoryCustom
 {
-    Task<IEnumerable<DepartmentInDepartment>> GetByParentIdAsync(Guid parentDepartmentId);
-    Task<IEnumerable<DepartmentInDepartment>> GetByChildIdAsync(Guid childDepartmentId);
-    Task<DepartmentInDepartment?> FindByParentAndChildAsync(Guid parentDepartmentId, Guid childDepartmentId);
-    Task<bool> RelationExistsAsync(Guid parentDepartmentId, Guid childDepartmentId);
-    Task<IEnumerable<DepartmentInDepartment>> GetWithDepartmentsAsync();
+    Task<IEnumerable<DepartmentInDepartment>> GetChildrenAsync(Guid parentDepartmentId);
+    Task<IEnumerable<DepartmentInDepartment>> GetParentsAsync(Guid childDepartmentId);
+    Task<bool> LinkExistsAsync(Guid parentDepartmentId, Guid childDepartmentId);
+    Task<DepartmentInDepartment?> FindLinkAsync(Guid parentDepartmentId, Guid childDepartmentId);
+    Task<IEnumerable<DepartmentInDepartment>> GetByTenantAsync(Guid tenantRootDepartmentId);
 }
