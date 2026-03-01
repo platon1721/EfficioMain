@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Base.Contracts\Base.Contracts.csproj" />
+      <ProjectReference Include="..\Efficio.BLL.Contracts\Efficio.BLL.Contracts.csproj" />
+      <ProjectReference Include="..\Efficio.BLL.DTO\Efficio.BLL.DTO.csproj" />
+      <ProjectReference Include="..\Efficio.DAL.Contracts\Efficio.DAL.Contracts.csproj" />
+      <ProjectReference Include="..\Efficio.DAL.DTO\Efficio.DAL.DTO.csproj" />
+    </ItemGroup>
+
 </Project>

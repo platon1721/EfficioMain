@@ -13,5 +13,5 @@ public interface ITenantRepositoryCustom
     Task<IEnumerable<Tenant>> GetByStatusAsync(TenantStatus status);
     Task<Tenant?> FindByRootDepartmentIdAsync(Guid rootDepartmentId);
     Task<IEnumerable<Tenant>> GetActiveTenantsAsync();
-    Task<bool> CodeExistsAsync(string code);
+    Task<bool> CodeExistsAsync(string code, Guid? excludeId = null);
 }
