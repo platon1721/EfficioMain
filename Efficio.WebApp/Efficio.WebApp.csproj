@@ -7,14 +7,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.14"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.14" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Auth\" />
-      <Folder Include="Controllers\" />
-      <Folder Include="Extensions\" />
+        <!-- Base -->
+        <ProjectReference Include="..\Base.Contracts\Base.Contracts.csproj" />
+        <ProjectReference Include="..\Base.Domain\Base.Domain.csproj" />
+
+        <!-- BLL -->
+        <ProjectReference Include="..\Efficio.BLL\Efficio.BLL.csproj" />
+        <ProjectReference Include="..\Efficio.BLL.Contracts\Efficio.BLL.Contracts.csproj" />
+
+        <!-- DAL -->
+        <ProjectReference Include="..\Efficio.DAL.Contracts\Efficio.DAL.Contracts.csproj" />
+        <ProjectReference Include="..\Efficio.DAL.EF\Efficio.DAL.EF.csproj" />
+
+        <!-- Domain + DTO -->
+        <ProjectReference Include="..\Efficio.Domain\Efficio.Domain.csproj" />
+        <ProjectReference Include="..\Efficio.DTO\Efficio.DTO.csproj" />
     </ItemGroup>
 
 </Project>
