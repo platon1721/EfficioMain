@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using Base.Contracts;
 using Base.Domain;
 using Efficio.BLL;
@@ -79,6 +80,18 @@ builder.Services.AddScoped<IEfficioUOW, EfficioUOW>();
 
 // ===================== BLL =====================
 builder.Services.AddScoped<IEfficioBLL, EfficioBLL>();
+
+// ===================== API Versioning =====================
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // ===================== Controllers =====================
 builder.Services.AddControllers();

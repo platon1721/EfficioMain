@@ -5,7 +5,7 @@ using Efficio.BLL.Mappers.Departments;
 using Efficio.DAL.Contracts;
 using DalDto = Efficio.DAL.DTO.Departments;
 
-namespace Efficio.BLL.Services;
+namespace Efficio.BLL.Services.Departments;
 
 public class DepartmentInDepartmentService
     : BaseService<DepartmentInDepartment, DalDto.DepartmentInDepartment, IDepartmentInDepartmentRepository>,

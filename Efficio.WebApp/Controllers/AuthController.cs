@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Asp.Versioning;
 using Efficio.DAL.EF;
 using Efficio.Domain.Identity;
 using Efficio.DTO;
@@ -18,8 +19,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Efficio.WebApp.Controllers;
 
+[ApiVersion("1.0")]
 [ApiController]
-[Route("api/v1/[controller]/[action]")]
+[Route("api/v{version:apiVersion}/[controller]/[action]")]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;

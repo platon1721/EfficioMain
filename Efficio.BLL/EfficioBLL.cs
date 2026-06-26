@@ -1,5 +1,6 @@
 using Efficio.BLL.Contracts;
 using Efficio.BLL.Services;
+using Efficio.BLL.Services.Departments;
 using Efficio.DAL.Contracts;
 
 namespace Efficio.BLL;
