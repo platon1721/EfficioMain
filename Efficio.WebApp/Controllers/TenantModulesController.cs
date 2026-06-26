@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using Efficio.BLL.Contracts;
+using Efficio.BLL.Contracts.Exceptions;
 using Efficio.BLL.DTO.Tenants;
-using Efficio.DTO;
 using Efficio.DTO.Mappers;
 using Efficio.DTO.Tenants.TenantModule;
 using Efficio.WebApp.Extensions;
@@ -34,8 +34,8 @@ public class TenantModulesController : ControllerBase
     [ProducesResponseType<IEnumerable<TenantModuleResponse>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<TenantModuleResponse>>> GetAll(Guid tenantId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var modules = await _bll.TenantModuleService.GetByTenantAsync(tenant.RootDepartmentId);
         return Ok(modules.Select(TenantModuleApiMapper.ToResponse));
@@ -48,8 +48,8 @@ public class TenantModulesController : ControllerBase
     [ProducesResponseType<IEnumerable<TenantModuleResponse>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<TenantModuleResponse>>> GetActive(Guid tenantId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var modules = await _bll.TenantModuleService.GetActiveModulesForTenantAsync(tenant.RootDepartmentId);
         return Ok(modules.Select(TenantModuleApiMapper.ToResponse));
@@ -60,25 +60,17 @@ public class TenantModulesController : ControllerBase
     /// </summary>
     [HttpPost]
     [ProducesResponseType<TenantModuleResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<TenantModuleResponse>> Assign(Guid tenantId, [FromBody] AssignTenantModuleRequest request)
     {
-        if (!User.IsPlatformAdmin()) return Forbid();
+        if (!User.IsPlatformAdmin())
+            throw new ForbiddenException();
 
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var alreadyHas = await _bll.TenantModuleService.HasModuleAsync(tenant.RootDepartmentId, request.ModuleId);
         if (alreadyHas)
-        {
-            return BadRequest(new RestApiErrorResponse
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Title = "Module already assigned",
-                Status = 400,
-                Detail = "This module is already assigned to the tenant"
-            });
-        }
+            throw new ConflictException("This module is already assigned to the tenant");
 
         var entity = new TenantModule
         {
@@ -92,8 +84,6 @@ public class TenantModulesController : ControllerBase
         await _bll.SaveChangesAsync();
 
         var created = await _bll.TenantModuleService.FindAsync(entity.Id);
-        // return Created($"api/v1/tenants/{tenantId}/modules/{entity.Id}",
-        //     TenantModuleApiMapper.ToResponse(created!));
         return CreatedAtAction(nameof(GetAll), new { tenantId },
             TenantModuleApiMapper.ToResponse(created!));
     }
@@ -103,16 +93,16 @@ public class TenantModulesController : ControllerBase
     /// </summary>
     [HttpDelete("{moduleId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(Guid tenantId, Guid moduleId)
     {
-        if (!User.IsPlatformAdmin()) return Forbid();
+        if (!User.IsPlatformAdmin())
+            throw new ForbiddenException();
 
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
-        var tenantModule = await _bll.TenantModuleService.FindByTenantAndModuleAsync(tenant.RootDepartmentId, moduleId);
-        if (tenantModule == null) return NotFound();
+        var tenantModule = await _bll.TenantModuleService.FindByTenantAndModuleAsync(tenant.RootDepartmentId, moduleId)
+                           ?? throw new NotFoundException("TenantModule", moduleId);
 
         await _bll.TenantModuleService.RemoveAsync(tenantModule.Id);
         await _bll.SaveChangesAsync();

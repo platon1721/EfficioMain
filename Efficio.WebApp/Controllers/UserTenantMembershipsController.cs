@@ -1,6 +1,6 @@
 using Asp.Versioning;
 using Efficio.BLL.Contracts;
-using Efficio.DTO;
+using Efficio.BLL.Contracts.Exceptions;
 using Efficio.DTO.Mappers;
 using Efficio.DTO.Tenants.UserTenantMembership;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,8 +32,8 @@ public class UserTenantMembershipsController : ControllerBase
     [ProducesResponseType<IEnumerable<UserTenantMembershipResponse>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<UserTenantMembershipResponse>>> GetAll(Guid tenantId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var members = await _bll.UserTenantMembershipService.GetByTenantAsync(tenant.RootDepartmentId);
         return Ok(members.Select(UserTenantMembershipApiMapper.ToResponse));
@@ -46,8 +46,8 @@ public class UserTenantMembershipsController : ControllerBase
     [ProducesResponseType<IEnumerable<UserTenantMembershipResponse>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<UserTenantMembershipResponse>>> GetActive(Guid tenantId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var members = await _bll.UserTenantMembershipService.GetActiveUsersByTenantAsync(tenant.RootDepartmentId);
         return Ok(members.Select(UserTenantMembershipApiMapper.ToResponse));
@@ -58,25 +58,16 @@ public class UserTenantMembershipsController : ControllerBase
     /// </summary>
     [HttpPost("invite")]
     [ProducesResponseType<UserTenantMembershipResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserTenantMembershipResponse>> Invite(Guid tenantId, [FromBody] InviteUserRequest request)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var result = await _bll.UserTenantMembershipService
             .InviteUserAsync(request.UserId, tenant.RootDepartmentId);
 
         if (result == null)
-        {
-            return BadRequest(new RestApiErrorResponse
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Title = "Invite failed",
-                Status = 400,
-                Detail = "Could not invite user"
-            });
-        }
+            throw new ValidationException("Could not invite user");
 
         await _bll.SaveChangesAsync();
         return CreatedAtAction(nameof(GetAll), new { tenantId },
@@ -88,15 +79,15 @@ public class UserTenantMembershipsController : ControllerBase
     /// </summary>
     [HttpPost("{userId:guid}/activate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Activate(Guid tenantId, Guid userId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var success = await _bll.UserTenantMembershipService
             .ActivateMembershipAsync(userId, tenant.RootDepartmentId);
-        if (!success) return NotFound();
+        if (!success)
+            throw new NotFoundException("Membership", userId);
 
         await _bll.SaveChangesAsync();
         return Ok(new { message = "Membership activated" });
@@ -107,15 +98,15 @@ public class UserTenantMembershipsController : ControllerBase
     /// </summary>
     [HttpPost("{userId:guid}/suspend")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Suspend(Guid tenantId, Guid userId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var success = await _bll.UserTenantMembershipService
             .SuspendMembershipAsync(userId, tenant.RootDepartmentId);
-        if (!success) return NotFound();
+        if (!success)
+            throw new NotFoundException("Membership", userId);
 
         await _bll.SaveChangesAsync();
         return Ok(new { message = "Membership suspended" });
@@ -126,15 +117,15 @@ public class UserTenantMembershipsController : ControllerBase
     /// </summary>
     [HttpDelete("{userId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(Guid tenantId, Guid userId)
     {
-        var tenant = await _bll.TenantService.FindAsync(tenantId);
-        if (tenant == null) return NotFound();
+        var tenant = await _bll.TenantService.FindAsync(tenantId)
+                     ?? throw new NotFoundException("Tenant", tenantId);
 
         var success = await _bll.UserTenantMembershipService
             .RemoveMembershipAsync(userId, tenant.RootDepartmentId);
-        if (!success) return NotFound();
+        if (!success)
+            throw new NotFoundException("Membership", userId);
 
         await _bll.SaveChangesAsync();
         return NoContent();

@@ -9,6 +9,7 @@ using Efficio.DAL.EF;
 using Efficio.DAL.EF.Repositories;
 using Efficio.Domain.Identity;
 using Efficio.WebApp.Auth;
+using Efficio.WebApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -93,6 +94,11 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+
+// ===================== Validation Error Handling =====================
+builder.Services.AddValidationErrorHandling();
+
+
 // ===================== Controllers =====================
 builder.Services.AddControllers();
 
@@ -157,6 +163,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("CorsAllowAll");
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

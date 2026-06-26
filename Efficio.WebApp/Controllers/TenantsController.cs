@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Efficio.BLL.Contracts;
+using Efficio.BLL.Contracts.Exceptions;
 using Efficio.DTO;
 using Efficio.DTO.Mappers;
 using Efficio.DTO.Tenants.Tenant;
@@ -13,7 +14,6 @@ namespace Efficio.WebApp.Controllers;
 /// <summary>
 /// Tenant management. Platform admins can manage all tenants.
 /// </summary>
-
 [ApiVersion("1.0")]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
@@ -34,11 +34,10 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpGet]
     [ProducesResponseType<IEnumerable<TenantResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<TenantResponse>>> GetAll()
     {
         if (!User.IsPlatformAdmin())
-            return Forbid();
+            throw new ForbiddenException();
 
         var tenants = await _bll.TenantService.GetActiveTenantsAsync();
         return Ok(tenants.Select(TenantApiMapper.ToResponse));
@@ -49,26 +48,19 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType<TenantResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantResponse>> Get(Guid id)
     {
+        var entity = await _bll.TenantService.FindAsync(id);
+        if (entity == null)
+            throw new NotFoundException("Tenant", id);
+
         if (!User.IsPlatformAdmin())
         {
-            var tenant = await _bll.TenantService.FindByRootDepartmentIdAsync(id);
-            if (tenant == null)
-                tenant = await _bll.TenantService.FindAsync(id);
-
-            if (tenant == null) return NotFound();
-
             var isMember = await _bll.UserAccessService
-                .CanAccessTenantAsync(User.GetUserId(), tenant.RootDepartmentId);
-            if (!isMember) return Forbid();
-
-            return Ok(TenantApiMapper.ToResponse(tenant));
+                .CanAccessTenantAsync(User.GetUserId(), entity.RootDepartmentId);
+            if (!isMember)
+                throw new ForbiddenException();
         }
-
-        var entity = await _bll.TenantService.FindAsync(id);
-        if (entity == null) return NotFound();
 
         return Ok(TenantApiMapper.ToResponse(entity));
     }
@@ -78,11 +70,11 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpGet("by-code/{code}")]
     [ProducesResponseType<TenantResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantResponse>> GetByCode(string code)
     {
         var entity = await _bll.TenantService.FindByCodeAsync(code.Trim().ToLowerInvariant());
-        if (entity == null) return NotFound();
+        if (entity == null)
+            throw new NotFoundException($"Tenant with code '{code}' was not found");
 
         return Ok(TenantApiMapper.ToResponse(entity));
     }
@@ -92,24 +84,14 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpPost]
     [ProducesResponseType<TenantResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<TenantResponse>> Create([FromBody] CreateTenantRequest request)
     {
         if (!User.IsPlatformAdmin())
-            return Forbid();
+            throw new ForbiddenException();
 
         var codeExists = await _bll.TenantService.CodeExistsAsync(request.Code.Trim().ToLowerInvariant());
         if (codeExists)
-        {
-            return BadRequest(new RestApiErrorResponse
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Title = "Validation failed",
-                Status = 400,
-                Detail = $"Tenant with code '{request.Code}' already exists"
-            });
-        }
+            throw new ConflictException("Tenant", "code", request.Code);
 
         var bllEntity = TenantApiMapper.ToBll(request);
         _bll.TenantService.Add(bllEntity);
@@ -127,15 +109,14 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpPut("{id:guid}")]
     [ProducesResponseType<TenantResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<TenantResponse>> Update(Guid id, [FromBody] UpdateTenantRequest request)
     {
         if (!User.IsPlatformAdmin())
-            return Forbid();
+            throw new ForbiddenException();
 
         var existing = await _bll.TenantService.FindAsync(id);
-        if (existing == null) return NotFound();
+        if (existing == null)
+            throw new NotFoundException("Tenant", id);
 
         existing.Name = request.Name.Trim();
         if (request.DefaultTimeZone != null) existing.DefaultTimeZone = request.DefaultTimeZone;
@@ -153,15 +134,14 @@ public class TenantsController : ControllerBase
     /// </summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> Delete(Guid id)
     {
         if (!User.IsPlatformAdmin())
-            return Forbid();
+            throw new ForbiddenException();
 
         var exists = await _bll.TenantService.ExistsAsync(id);
-        if (!exists) return NotFound();
+        if (!exists)
+            throw new NotFoundException("Tenant", id);
 
         await _bll.TenantService.RemoveAsync(id);
         await _bll.SaveChangesAsync();
