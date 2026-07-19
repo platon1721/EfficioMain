@@ -148,7 +148,7 @@ public class EfficioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
             entity.HasIndex(e => new { e.RoleId, e.PermissionId }).IsUnique();
 
             entity.HasOne(e => e.Role)
-                .WithMany()
+                .WithMany(r => r.RolePermissions)
                 .HasForeignKey(e => e.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
