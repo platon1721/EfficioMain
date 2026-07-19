@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+**/.idea/
+**/.git/
+**/node_modules/
+*.md
+.gitignore
+docker-compose.yml

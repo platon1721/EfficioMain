@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: efficio-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: efficio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - efficio_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: efficio-api
+    ports:
+      - "5007:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=efficio;Username=postgres;Password=postgres
+      - Jwt__Key=CHANGE-ME-to-a-long-random-secret-key-at-least-32-chars!!
+      - Jwt__Issuer=efficio-api
+      - Jwt__Audience=efficio-app
+      - Jwt__ExpiresInMinutes=60
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  efficio_pgdata:
