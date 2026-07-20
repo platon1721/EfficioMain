@@ -449,7 +449,6 @@ namespace Efficio.DAL.EF.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     PermissionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId1 = table.Column<Guid>(type: "uuid", nullable: true),
                     TenantRootDepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     DepartmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedById = table.Column<Guid>(type: "uuid", nullable: false),
@@ -475,11 +474,6 @@ namespace Efficio.DAL.EF.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RolePermissions_Roles_RoleId1",
-                        column: x => x.RoleId1,
-                        principalTable: "Roles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -617,11 +611,6 @@ namespace Efficio.DAL.EF.Migrations
                 table: "RolePermissions",
                 columns: new[] { "RoleId", "PermissionId" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RolePermissions_RoleId1",
-                table: "RolePermissions",
-                column: "RoleId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_DepartmentId_Name",

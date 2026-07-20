@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Efficio.DAL.EF.Migrations
 {
     [DbContext(typeof(EfficioDbContext))]
-    [Migration("20260719143309_InitialCreate")]
+    [Migration("20260719153339_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -540,9 +540,6 @@ namespace Efficio.DAL.EF.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("RoleId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("SysNotes")
                         .HasColumnType("text");
 
@@ -561,8 +558,6 @@ namespace Efficio.DAL.EF.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PermissionId");
-
-                    b.HasIndex("RoleId1");
 
                     b.HasIndex("RoleId", "PermissionId")
                         .IsUnique();
@@ -903,14 +898,12 @@ namespace Efficio.DAL.EF.Migrations
                     b.HasOne("Efficio.Domain.Departments.Department", "ChildDepartment")
                         .WithMany("ParentDepartmentLinks")
                         .HasForeignKey("ChildDepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Efficio.Domain.Departments.Department", "ParentDepartment")
                         .WithMany("ChildDepartmentLinks")
                         .HasForeignKey("ParentDepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ChildDepartment");
 
@@ -982,18 +975,12 @@ namespace Efficio.DAL.EF.Migrations
                     b.HasOne("Efficio.Domain.Security.Permission", "Permission")
                         .WithMany()
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Efficio.Domain.Security.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Efficio.Domain.Security.Role", null)
                         .WithMany("RolePermissions")
-                        .HasForeignKey("RoleId1");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Permission");
 

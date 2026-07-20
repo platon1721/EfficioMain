@@ -152,12 +152,14 @@ public class EfficioDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, G
             entity.HasOne(e => e.Role)
                 .WithMany(r => r.RolePermissions)
                 .HasForeignKey(e => e.RoleId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
 
             entity.HasOne(e => e.Permission)
                 .WithMany()
                 .HasForeignKey(e => e.PermissionId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
         });
 
         // ===================== UserDepartmentRole =====================
