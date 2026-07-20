@@ -1,7 +1,6 @@
 using Asp.Versioning;
 using Efficio.BLL.Contracts;
 using Efficio.BLL.Contracts.Exceptions;
-using Efficio.DTO;
 using Efficio.DTO.Mappers;
 using Efficio.DTO.Tenants.Tenant;
 using Efficio.WebApp.Extensions;
